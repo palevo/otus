@@ -23,6 +23,7 @@ public class Router {
     public RouterFunction<ServerResponse> route() {
         StatusHandler statusHandler = new StatusHandler();
         return RouterFunctions
-                .route(GET("/health").and(accept(APPLICATION_JSON)), statusHandler::health);
+                .route(GET("/").and(accept(APPLICATION_JSON)), statusHandler::health)
+                .andRoute(GET("/health").and(accept(APPLICATION_JSON)), statusHandler::health);
     }
 }
