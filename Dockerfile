@@ -3,5 +3,6 @@ LABEL maintainer="a.osipov.it@gmail.com"
 RUN apk update && apk upgrade && apk add bash
 COPY target/otus-palevo-application /srv
 WORKDIR /srv/otus-palevo
-ENTRYPOINT ["startup.sh", "start"]
+RUN chmod 755 startup.sh
+CMD ["startup.sh", "start"]
 EXPOSE 8000
