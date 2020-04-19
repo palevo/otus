@@ -1,6 +1,5 @@
 #!/bin/sh
 
-JAVA_HOME="java"
 MEM="-Xms1g -Xmx1g"
 
 STARTUP_WAIT=10
@@ -8,11 +7,11 @@ SHUTDOWN_WAIT=10
 
 CT_USER="portal-platform"
 CT_NAME="bft-pp-cms"
-CT_HOME=/srv/otus-palevo-application
+CT_HOME=/srv/otus-palevo
 CT_OUT=${CT_HOME}/logs/service.out
 CT_PID=${CT_HOME}/run.pid
 
-CT_PROGRAM="$JAVA_HOME -server $MEM -jar palevo.jar"
+CT_PROGRAM="$JAVA_HOME/bin/java -server $MEM -jar palevo.jar"
 
 case $1 in
     start)

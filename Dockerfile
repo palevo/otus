@@ -4,5 +4,5 @@ RUN apk update && apk upgrade && apk add bash
 COPY target/otus-palevo-application /srv
 WORKDIR /srv/otus-palevo
 RUN chmod 755 startup.sh
-CMD ["startup.sh", "start"]
+CMD ["./startup.sh", "start"]
 EXPOSE 8000
