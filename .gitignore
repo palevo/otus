@@ -2,7 +2,7 @@
 *.class
 
 # Log file
-*.log
+**/logs/
 
 # BlueJ files
 *.ctxt
@@ -25,3 +25,6 @@ hs_err_pid*
 # idea
 .idea
 **/target/
+
+# application
+run.pid

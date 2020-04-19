@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<assembly>
+    <id>RELEASE</id>
+
+    <formats>
+        <format>dir</format>
+        <format>zip</format>
+    </formats>
+
+    <includeBaseDirectory>true</includeBaseDirectory>
+    <baseDirectory>otus-palevo-application</baseDirectory>
+
+    <fileSets>
+        <fileSet>
+            <directory>config/</directory>
+            <outputDirectory>/config</outputDirectory>
+        </fileSet>
+    </fileSets>
+
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>/</outputDirectory>
+            <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+            <unpack>false</unpack>
+            <scope>runtime</scope>
+            <includes>
+                <include>ru.otus:palevo:jar:*</include>
+            </includes>
+        </dependencySet>
+    </dependencySets>
+</assembly>
