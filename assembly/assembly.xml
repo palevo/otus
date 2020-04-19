@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <assembly>
-    <id>RELEASE</id>
+    <id>application</id>
 
     <formats>
         <format>dir</format>
@@ -8,7 +8,7 @@
     </formats>
 
     <includeBaseDirectory>true</includeBaseDirectory>
-    <baseDirectory>otus-palevo-application</baseDirectory>
+    <baseDirectory>otus-palevo</baseDirectory>
 
     <fileSets>
         <fileSet>

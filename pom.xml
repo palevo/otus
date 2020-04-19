@@ -58,6 +58,7 @@
     </dependencies>
 
     <build>
+        <finalName>otus-palevo</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
