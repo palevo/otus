@@ -31,3 +31,13 @@ spec:
               path: /health
             initialDelaySeconds: 10
             periodSeconds: 5
+          volumeMounts:
+            - mountPath: /srv/otus-palevo-application/config
+              name: app-properties
+      volumes:
+        - name: app-properties
+          configMap:
+            name: otus-config
+            items:
+              - key: application.properties
+                path: application.properties
