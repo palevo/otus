@@ -1,13 +1,13 @@
 apiVersion: skaffold/v2beta2
 kind: Config
 metadata:
-  name: otus
+  name: devops
 build:
   artifacts:
   - image: palevo/otus
 deploy:
   kubectl:
     manifests:
-    - kube/deployment.yaml
-    - kube/ingress.yaml
-    - kube/service.yaml
+    - kubernetes/deployment.yaml
+    - kubernetes/ingress.yaml
+    - kubernetes/service.yaml
