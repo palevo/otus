@@ -1,7 +1,6 @@
 package ru.otus.palevo.web;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -39,8 +38,23 @@ public class Router {
         return Mono.justOrEmpty(new Response(config.getVersion(), OK));
     }
 
+    @PostMapping(path = "/users", produces = APPLICATION_JSON_VALUE)
+    public Mono<User> saveUser(@RequestBody User user) {
+        return Mono.justOrEmpty(service.save(user));
+    }
+
+    @DeleteMapping(path = "/users/#{id}", produces = APPLICATION_JSON_VALUE)
+    public void deleteUser(@PathVariable Long id) {
+        service.delete(id);
+    }
+
+    @GetMapping(path = "/users/#{id}", produces = APPLICATION_JSON_VALUE)
+    public Mono<User> getUser(@PathVariable Long id) {
+        return Mono.justOrEmpty(service.one(id));
+    }
+
     @GetMapping(path = "/users", produces = APPLICATION_JSON_VALUE)
-    public Flux<User> users() {
+    public Flux<User> getUsers() {
         return Flux.fromIterable(service.all());
     }
 }

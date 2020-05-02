@@ -26,6 +26,28 @@ public class UserService {
     }
 
     /**
+     * @param user user for save
+     * @return saved user
+     */
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
+    /**
+     * @param id user id
+     */
+    public void delete(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    /**
+     * @return founded user
+     */
+    public User one(Long id) {
+        return userRepository.getOne(id);
+    }
+
+    /**
      * @return users
      */
     public List<User> all() {
