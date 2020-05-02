@@ -1,29 +1,46 @@
 package ru.otus.palevo.web;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.reactive.function.server.RouterFunction;
-import org.springframework.web.reactive.function.server.RouterFunctions;
-import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import ru.otus.palevo.web.handlers.StatusHandler;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import ru.otus.palevo.AppConfiguration;
+import ru.otus.palevo.model.Response;
+import ru.otus.palevo.model.User;
+import ru.otus.palevo.service.UserService;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
-import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
+import static ru.otus.palevo.model.Response.StatusType.OK;
 
 /**
+ * API controller
+ *
  * @author A.Osipov
  * @since 19 апр. 2020 г.
  */
-@Configuration
+@RestController
 public class Router {
 
-    @Bean
-    public RouterFunction<ServerResponse> route() {
-        StatusHandler statusHandler = new StatusHandler();
-        return RouterFunctions
-                .route(GET("/").and(accept(APPLICATION_JSON)), statusHandler::health)
-                .andRoute(GET("/health").and(accept(APPLICATION_JSON)), statusHandler::health);
+    private final AppConfiguration config;
+    private final UserService service;
+
+    /**
+     * Constructor
+     */
+    public Router(AppConfiguration config, UserService service) {
+        this.config = config;
+        this.service = service;
+    }
+
+    @GetMapping(path = { "/", "/health" }, produces = APPLICATION_JSON_VALUE)
+    public Mono<Response> health() {
+        return Mono.justOrEmpty(new Response(config.getVersion(), OK));
+    }
+
+    @GetMapping(path = "/users", produces = APPLICATION_JSON_VALUE)
+    public Flux<User> users() {
+        return Flux.fromIterable(service.all());
     }
 }
