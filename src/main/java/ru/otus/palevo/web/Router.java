@@ -43,12 +43,12 @@ public class Router {
         return Mono.justOrEmpty(service.save(user));
     }
 
-    @DeleteMapping(path = "/users/#{id}", produces = APPLICATION_JSON_VALUE)
+    @DeleteMapping(path = "/users/{id}", produces = APPLICATION_JSON_VALUE)
     public void deleteUser(@PathVariable Long id) {
         service.delete(id);
     }
 
-    @GetMapping(path = "/users/#{id}", produces = APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/users/{id}", produces = APPLICATION_JSON_VALUE)
     public Mono<User> getUser(@PathVariable Long id) {
         return Mono.justOrEmpty(service.one(id));
     }
