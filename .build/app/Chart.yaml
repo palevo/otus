@@ -3,7 +3,7 @@ name: app
 description: Otus application
 type: application
 version: 0.3.0
-appVersion: 1.2.0-SNAPSHOT
+appVersion: 0.2.0-rc.1
 
 dependencies:
   - name: postgresql
