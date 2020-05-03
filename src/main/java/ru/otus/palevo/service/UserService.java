@@ -34,6 +34,15 @@ public class UserService {
     }
 
     /**
+     * @param name  user name
+     * @param email user email
+     * @return saved user
+     */
+    public User save(String name, String email) {
+        return userRepository.save(new User(name, email));
+    }
+
+    /**
      * @param id user id
      */
     public void delete(Long id) {

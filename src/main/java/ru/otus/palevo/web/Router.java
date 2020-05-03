@@ -39,8 +39,8 @@ public class Router {
     }
 
     @PostMapping(path = "/users", produces = APPLICATION_JSON_VALUE)
-    public Mono<User> saveUser(@RequestBody User user) {
-        return Mono.justOrEmpty(service.save(user));
+    public Mono<User> saveUser(@RequestParam String name, @RequestParam String email) {
+        return Mono.justOrEmpty(service.save(name, email));
     }
 
     @DeleteMapping(path = "/users/{id}", produces = APPLICATION_JSON_VALUE)
