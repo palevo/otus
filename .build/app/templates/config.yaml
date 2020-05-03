@@ -1,4 +1,11 @@
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otus-config
+#data:
+  # nothing
+---
+apiVersion: v1
 kind: Secret
 metadata:
   name: otus-secret

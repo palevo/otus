@@ -2,8 +2,8 @@ apiVersion: v2
 name: app
 description: Otus application
 type: application
-version: 0.4.0
-appVersion: 0.2.0-rc.2
+version: 0.5.0
+appVersion: 0.2.0-rc.3
 
 dependencies:
   - name: postgresql
