@@ -1,8 +1,11 @@
 package ru.otus.palevo.model;
 
+import java.io.Serializable;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,9 +19,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
+@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "tbl_user")
-public class User {
+public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

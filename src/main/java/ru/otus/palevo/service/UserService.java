@@ -1,10 +1,12 @@
 package ru.otus.palevo.service;
 
-import java.util.List;
-import java.util.Optional;
-
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import ru.otus.palevo.event.UserCreatedEvent;
+import ru.otus.palevo.event.UserDeletedEvent;
 import ru.otus.palevo.model.User;
 import ru.otus.palevo.repository.UserRepository;
 
@@ -17,21 +19,29 @@ import ru.otus.palevo.repository.UserRepository;
 @Service
 public class UserService {
 
+    private final ApplicationEventPublisher publisher;
     private final UserRepository userRepository;
 
     /**
      * Constructor
      */
-    public UserService(UserRepository userRepository) {
+    public UserService(ApplicationEventPublisher publisher, UserRepository userRepository) {
+        this.publisher = publisher;
         this.userRepository = userRepository;
     }
 
     /**
-     * @param user user for save
-     * @return saved user
+     * @return users
      */
-    public User save(User user) {
-        return userRepository.save(user);
+    public Flux<User> all() {
+        return Flux.fromIterable(userRepository.findAll());
+    }
+
+    /**
+     * @return founded user
+     */
+    public Mono<User> one(Long id) {
+        return Mono.justOrEmpty(userRepository.findById(id));
     }
 
     /**
@@ -39,28 +49,32 @@ public class UserService {
      * @param email user email
      * @return saved user
      */
-    public User save(String name, String email) {
-        return userRepository.save(new User(name, email));
+    public Mono<User> create(String name, String email) {
+        return Mono.justOrEmpty(userRepository.save(new User(name, email)))
+                .doOnSuccess(createdUser -> publisher.publishEvent(new UserCreatedEvent(createdUser)));
+    }
+
+    /**
+     * @param name  user name
+     * @param email user email
+     * @return saved user
+     */
+    public Mono<User> update(Long id, String name, String email) {
+        return Mono.justOrEmpty(userRepository.findById(id).map(u -> {
+            u.setName(name);
+            u.setEmail(email);
+            return userRepository.save(u);
+        }));
     }
 
     /**
      * @param id user id
+     * @return deleted user
      */
-    public void delete(Long id) {
-        userRepository.deleteById(id);
-    }
-
-    /**
-     * @return founded user
-     */
-    public Optional<User> one(Long id) {
-        return userRepository.findById(id);
-    }
-
-    /**
-     * @return users
-     */
-    public List<User> all() {
-        return userRepository.findAll();
+    public Mono<User> delete(Long id) {
+        return Mono.justOrEmpty(userRepository.findById(id).map(u -> {
+            userRepository.deleteById(id);
+            return u;
+        })).doOnSuccess(deletedUser -> publisher.publishEvent(new UserDeletedEvent(deletedUser)));
     }
 }
