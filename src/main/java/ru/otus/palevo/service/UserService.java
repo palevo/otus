@@ -51,7 +51,7 @@ public class UserService {
      */
     public Mono<User> create(String name, String email) {
         return Mono.justOrEmpty(userRepository.save(new User(name, email)))
-                .doOnSuccess(createdUser -> publisher.publishEvent(new UserCreatedEvent(createdUser)));
+                .doOnNext(createdUser -> publisher.publishEvent(new UserCreatedEvent(createdUser)));
     }
 
     /**
@@ -75,6 +75,6 @@ public class UserService {
         return Mono.justOrEmpty(userRepository.findById(id).map(u -> {
             userRepository.deleteById(id);
             return u;
-        })).doOnSuccess(deletedUser -> publisher.publishEvent(new UserDeletedEvent(deletedUser)));
+        })).doOnNext(deletedUser -> publisher.publishEvent(new UserDeletedEvent(deletedUser)));
     }
 }
