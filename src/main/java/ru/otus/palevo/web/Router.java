@@ -1,5 +1,7 @@
 package ru.otus.palevo.web;
 
+import javax.validation.Valid;
+
 import org.springframework.web.bind.annotation.*;
 
 import reactor.core.publisher.Flux;
@@ -8,8 +10,6 @@ import ru.otus.palevo.AppConfiguration;
 import ru.otus.palevo.model.Response;
 import ru.otus.palevo.model.User;
 import ru.otus.palevo.service.UserService;
-
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import static ru.otus.palevo.model.Response.StatusType.OK;
 
@@ -33,27 +33,27 @@ public class Router {
         this.service = service;
     }
 
-    @GetMapping(path = { "/", "/health" }, produces = APPLICATION_JSON_VALUE)
+    @GetMapping(path = { "/", "/health" })
     public Mono<Response> health() {
         return Mono.justOrEmpty(new Response(config.getVersion(), OK));
     }
 
-    @PostMapping(path = "/users", produces = APPLICATION_JSON_VALUE)
-    public Mono<User> saveUser(@RequestParam String name, @RequestParam String email) {
-        return Mono.justOrEmpty(service.save(name, email));
+    @PostMapping(path = "/users")
+    public Mono<User> saveUser(@Valid @ModelAttribute User user) {
+        return Mono.justOrEmpty(service.save(user));
     }
 
-    @DeleteMapping(path = "/users/{id}", produces = APPLICATION_JSON_VALUE)
+    @DeleteMapping(path = "/users/{id}")
     public void deleteUser(@PathVariable Long id) {
         service.delete(id);
     }
 
-    @GetMapping(path = "/users/{id}", produces = APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/users/{id}")
     public Mono<User> getUser(@PathVariable Long id) {
         return Mono.justOrEmpty(service.one(id));
     }
 
-    @GetMapping(path = "/users", produces = APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/users")
     public Flux<User> getUsers() {
         return Flux.fromIterable(service.all());
     }

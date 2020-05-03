@@ -1,6 +1,7 @@
 package ru.otus.palevo.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,6 +25,7 @@ public class User {
     private Long id;
     @Column
     private String name;
+    @Email
     @Column
     private String email;
 

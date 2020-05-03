@@ -1,6 +1,7 @@
 package ru.otus.palevo.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -52,8 +53,8 @@ public class UserService {
     /**
      * @return founded user
      */
-    public User one(Long id) {
-        return userRepository.getOne(id);
+    public Optional<User> one(Long id) {
+        return userRepository.findById(id);
     }
 
     /**
