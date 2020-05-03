@@ -1,0 +1,27 @@
+app:
+  port: 8000
+  replicaCount: 2
+  image:
+    repository: palevo/otus
+
+service:
+  type: ClusterIP
+  port: 8080
+
+ingress:
+  enabled: true
+  annotations: {
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+  }
+  host: arch.homework
+  path: /otusapp($|/)(.*)
+
+postgresql:
+  enabled: true
+  postgresqlUsername: admin
+  postgresqlPassword: admin
+  postgresqlDatabase: otus-db
+  service:
+    port: "5432"
+  persistence:
+    size: 1Gi

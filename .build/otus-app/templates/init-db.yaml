@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Chart.Name }}-init-db
+  annotations:
+    helm.sh/hook: post-upgrade
+spec:
+  backoffLimit: 1
+  template:
+    metadata:
+      name: {{ .Chart.Name }}-init-db
+      labels:
+        app: {{ .Chart.Name }}-init-db
+        version: {{ .Chart.AppVersion }}
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: {{ .Chart.Name }}-init-db
+          image: postgres:latest
+          command:
+            - sh
+            - "-c"
+            - |
+              psql postgres://admin:admin@postgresql/otus-db <<'EOF'
+              truncate tbl_users;
+              insert into tbl_users (id, name, email) values (1, 'User Name', 'user@email.com);
+              EOF

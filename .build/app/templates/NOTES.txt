@@ -1,5 +1,0 @@
-{{- if .Values.ingress.enabled }}
-    {{- range $host := .Values.ingress.hosts }}
-        {{- printf "http://%s" $host.host -}}
-    {{- end }}
-{{- end }}
