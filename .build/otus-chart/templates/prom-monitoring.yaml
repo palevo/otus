@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "app.name" . }}
+  labels:
+  {{- include "app.labels" . | nindent 4 }}
+spec:
+  jobLabel: {{ include "app.name" . }}
+  namespaceSelector:
+    matchNames:
+      - "{{ $.Release.Namespace }}"
+  selector:
+    matchLabels:
+  {{- include "app.labels" . | nindent 6 }}
+  endpoints:
+    - interval: 5s
+      port: http
+      path: /actuator/prometheus
