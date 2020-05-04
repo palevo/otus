@@ -1,16 +1,18 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Chart.Name }}-config
-#data:
-  # nothing
+  name: {{ include "app.name" . }}-config
+  labels:
+  {{- include "app.labels" . | nindent 4 }}
 ---
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ .Chart.Name }}-secret
+  name: {{ include "app.name" . }}-secret
+  labels:
+  {{- include "app.labels" . | nindent 4 }}
 type: Opaque
 data:
-  POSTGRES_URI: {{ printf "jdbc:postgresql://%s-postgresql:%s/%s" .Chart.Name .Values.postgresql.service.port .Values.postgresql.postgresqlDatabase | b64enc | quote }}
+  POSTGRES_URI: {{ include "postgresql.uri" . | b64enc | quote }}
   POSTGRES_USER: {{ .Values.postgresql.postgresqlUsername | b64enc | quote }}
   POSTGRES_PASS: {{ .Values.postgresql.postgresqlPassword | b64enc | quote }}

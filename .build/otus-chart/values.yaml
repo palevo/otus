@@ -1,4 +1,5 @@
 app:
+  name: app
   port: 8000
   replicaCount: 2
   image:
@@ -9,12 +10,11 @@ service:
   port: 8080
 
 ingress:
-  enabled: true
+  host: arch.homework
+  path: /otusapp($|/)(.*)
   annotations: {
     nginx.ingress.kubernetes.io/rewrite-target: /$2
   }
-  host: arch.homework
-  path: /otusapp($|/)(.*)
 
 postgresql:
   enabled: true

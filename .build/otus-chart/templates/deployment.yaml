@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Chart.Name }}
+  name: {{ include "app.name" . }}
+  labels:
+  {{- include "app.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.app.replicaCount }}
   selector:
     matchLabels:
-      app: {{ .Chart.Name }}
-      version: {{ .Chart.AppVersion }}
+      app: {{ include "app.name" . }}
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}
-        version: {{ .Chart.AppVersion }}
+        app: {{ include "app.name" . }}
     spec:
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ include "app.name" . }}
           image: "{{ .Values.app.image.repository }}:{{ .Chart.AppVersion }}"
           imagePullPolicy: IfNotPresent
           ports:
@@ -24,23 +24,23 @@ spec:
               protocol: TCP
           env:
             - name: otus.version
-              value: "{{ .Chart.AppVersion }}"
+              value: {{ .Chart.AppVersion | quote }}
             - name: server.port
-              value: "{{ .Values.app.port }}"
+              value: {{ .Values.app.port | quote }}
             - name: spring.datasource.url
               valueFrom:
                 secretKeyRef:
-                  name: "{{ .Chart.Name }}-secret"
+                  name: {{ include "app.name" . }}-secret
                   key: POSTGRES_URI
             - name: spring.datasource.username
               valueFrom:
                 secretKeyRef:
-                  name: "{{ .Chart.Name }}-secret"
+                  name: {{ include "app.name" . }}-secret
                   key: POSTGRES_USER
             - name: spring.datasource.password
               valueFrom:
                 secretKeyRef:
-                  name: "{{ .Chart.Name }}-secret"
+                  name: {{ include "app.name" . }}-secret
                   key: POSTGRES_PASS
           livenessProbe:
             httpGet:

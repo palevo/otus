@@ -1,9 +1,12 @@
 apiVersion: v2
-name: otus-app
+name: otus-chart
 description: Otus application
 type: application
 version: 0.7.0
 appVersion: 0.2.0-rc.7
+maintainers:
+  - name: Anton Osipov
+    email: a.osipov.it@gmail.com
 
 dependencies:
   - name: postgresql

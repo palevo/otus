@@ -1,18 +1,17 @@
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: {{ .Chart.Name }}-ingress
+  name: {{ include "app.name" . }}-ingress
   labels:
-    app: {{ .Chart.Name }}-ingress
-    version: {{ .Chart.AppVersion }}
+  {{- include "app.labels" . | nindent 4 }}
   annotations:
   {{- toYaml .Values.ingress.annotations | nindent 4 }}
 spec:
   rules:
-    - host: {{ .Values.ingress.host | quote }}
+    - host: {{ .Values.ingress.host }}
       http:
         paths:
           - path: {{ .Values.ingress.path }}
             backend:
-              serviceName: {{ .Chart.Name }}-service
+              serviceName: {{ include "app.name" . }}-service
               servicePort: {{ .Values.service.port }}
