@@ -4,6 +4,8 @@ app:
   replicaCount: 2
   image:
     repository: palevo/otus
+  metrics:
+    enabled: true
 
 service:
   type: ClusterIP

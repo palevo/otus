@@ -1,0 +1,353 @@
+---
+# Source: otus-chart/charts/postgresql/templates/secrets.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: otus-postgresql
+  labels:
+    app: postgresql
+    chart: postgresql-8.9.3
+    release: "otus"
+    heritage: "Helm"
+type: Opaque
+data:
+  postgresql-password: "YWRtaW4="
+---
+# Source: otus-chart/templates/app-config.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: otus-app-secret
+  labels:
+    app: otus-app
+    version: 0.3.0-rc.1
+    chart: otus-chart-0.8.0
+type: Opaque
+data:
+  POSTGRES_URI: "amRiYzpwb3N0Z3Jlc3FsOi8vb3R1cy1wb3N0Z3Jlc3FsOjU0MzIvb3R1cy1kYg=="
+  POSTGRES_USER: "YWRtaW4="
+  POSTGRES_PASS: "YWRtaW4="
+---
+# Source: otus-chart/templates/app-config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otus-app-config
+  labels:
+    app: otus-app
+    version: 0.3.0-rc.1
+    chart: otus-chart-0.8.0
+---
+# Source: otus-chart/templates/prom-dashboard.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otus-app-grafana-dashboards
+  labels:
+    grafana_dashboard: "1"
+---
+# Source: otus-chart/charts/postgresql/templates/svc-headless.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: otus-postgresql-headless
+  labels:
+    app: postgresql
+    chart: postgresql-8.9.3
+    release: "otus"
+    heritage: "Helm"
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+    - name: tcp-postgresql
+      port: 5432
+      targetPort: tcp-postgresql
+  selector:
+    app: postgresql
+    release: "otus"
+---
+# Source: otus-chart/charts/postgresql/templates/svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: otus-postgresql
+  labels:
+    app: postgresql
+    chart: postgresql-8.9.3
+    release: "otus"
+    heritage: "Helm"
+  annotations: {}
+spec:
+  type: ClusterIP
+  ports:
+    - name: tcp-postgresql
+      port: 5432
+      targetPort: tcp-postgresql
+  selector:
+    app: postgresql
+    release: "otus"
+    role: master
+---
+# Source: otus-chart/templates/app-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: otus-app-service
+  labels:
+    app: otus-app
+    version: 0.3.0-rc.1
+    chart: otus-chart-0.8.0
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: otus-app
+---
+# Source: otus-chart/templates/app-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otus-app
+  labels:
+    app: otus-app
+    version: 0.3.0-rc.1
+    chart: otus-chart-0.8.0
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: otus-app
+  template:
+    metadata:
+      labels:
+        app: otus-app
+    spec:
+      containers:
+        - name: otus-app
+          image: "palevo/otus:0.3.0-rc.1"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          env:
+            - name: otus.version
+              value: "0.3.0-rc.1"
+            - name: server.port
+              value: "8000"
+            - name: spring.datasource.url
+              valueFrom:
+                secretKeyRef:
+                  name: otus-app-secret
+                  key: POSTGRES_URI
+            - name: spring.datasource.username
+              valueFrom:
+                secretKeyRef:
+                  name: otus-app-secret
+                  key: POSTGRES_USER
+            - name: spring.datasource.password
+              valueFrom:
+                secretKeyRef:
+                  name: otus-app-secret
+                  key: POSTGRES_PASS
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 2
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 5
+---
+# Source: otus-chart/charts/postgresql/templates/statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: otus-postgresql
+  labels:
+    app: postgresql
+    chart: postgresql-8.9.3
+    release: "otus"
+    heritage: "Helm"
+  annotations: {}
+spec:
+  serviceName: otus-postgresql-headless
+  replicas: 1
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: postgresql
+      release: "otus"
+      role: master
+  template:
+    metadata:
+      name: otus-postgresql
+      labels:
+        app: postgresql
+        chart: postgresql-8.9.3
+        release: "otus"
+        heritage: "Helm"
+        role: master
+    spec:      
+      securityContext:
+        fsGroup: 1001
+      containers:
+        - name: otus-postgresql
+          image: docker.io/bitnami/postgresql:11.7.0-debian-10-r87
+          imagePullPolicy: "IfNotPresent"
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+          securityContext:
+            runAsUser: 1001
+          env:
+            - name: BITNAMI_DEBUG
+              value: "false"
+            - name: POSTGRESQL_PORT_NUMBER
+              value: "5432"
+            - name: POSTGRESQL_VOLUME_DIR
+              value: "/bitnami/postgresql"
+            - name: PGDATA
+              value: "/bitnami/postgresql/data"
+            - name: POSTGRES_USER
+              value: "admin"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: otus-postgresql
+                  key: postgresql-password
+            - name: POSTGRES_DB
+              value: "otus-db"
+            - name: POSTGRESQL_ENABLE_LDAP
+              value: "no"
+          ports:
+            - name: tcp-postgresql
+              containerPort: 5432
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - exec pg_isready -U "admin" -d "otus-db" -h 127.0.0.1 -p 5432
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 6
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - -e
+                - |
+                  exec pg_isready -U "admin" -d "otus-db" -h 127.0.0.1 -p 5432
+                  [ -f /opt/bitnami/postgresql/tmp/.initialized ] || [ -f /bitnami/postgresql/.initialized ]
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 6
+          volumeMounts:
+            - name: dshm
+              mountPath: /dev/shm
+            - name: data
+              mountPath: /bitnami/postgresql
+              subPath: ""
+      volumes:
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Gi
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - "ReadWriteOnce"
+        resources:
+          requests:
+            storage: "1Gi"
+---
+# Source: otus-chart/templates/app-ingress.yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: otus-app-ingress
+  labels:
+    app: otus-app
+    version: 0.3.0-rc.1
+    chart: otus-chart-0.8.0
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - host: arch.homework
+      http:
+        paths:
+          - path: /otusapp($|/)(.*)
+            backend:
+              serviceName: otus-app-service
+              servicePort: 8080
+---
+# Source: otus-chart/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "otus-app-test-connection"
+  labels:
+    app: otus-app
+    version: 0.3.0-rc.1
+    chart: otus-chart-0.8.0
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['otus-app:8080']
+  restartPolicy: Never
+---
+# Source: otus-chart/templates/app-init-db.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: otus-app-init-db
+  labels:
+    app: otus-app
+    version: 0.3.0-rc.1
+    chart: otus-chart-0.8.0
+  annotations:
+    helm.sh/hook: post-upgrade
+spec:
+  backoffLimit: 1
+  template:
+    metadata:
+      labels:
+        app: otus-app-init-db
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: otus-app-init-db
+          image: postgres:latest
+          command:
+            - sh
+            - "-c"
+            - |
+              psql jdbc:postgresql://otus-postgresql:5432/otus-db <<'EOF'
+              truncate tbl_users;
+              insert into tbl_users (id, name, email) values (1, 'User Name', 'user@email.com);
+              EOF
