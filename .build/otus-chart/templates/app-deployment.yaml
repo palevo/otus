@@ -25,6 +25,8 @@ spec:
           env:
             - name: otus.version
               value: {{ .Chart.AppVersion | quote }}
+            - name: spring.application.name
+              value: {{ include "app.name" . | quote }}
             - name: server.port
               value: {{ .Values.app.port | quote }}
             - name: spring.datasource.url
