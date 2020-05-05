@@ -318,7 +318,7 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['otus-app:8080']
+      args: ['otus-app-service:8080']
   restartPolicy: Never
 ---
 # Source: otus-chart/templates/app-init-db.yaml
@@ -333,7 +333,6 @@ metadata:
   annotations:
     helm.sh/hook: post-upgrade
 spec:
-  backoffLimit: 1
   template:
     metadata:
       labels:
@@ -348,6 +347,7 @@ spec:
             - "-c"
             - |
               psql jdbc:postgresql://otus-postgresql:5432/otus-db <<'EOF'
-              truncate tbl_users;
-              insert into tbl_users (id, name, email) values (1, 'User Name', 'user@email.com);
+                truncate tbl_users;
+                insert into tbl_users (id, name, email) values (1, 'User Name', 'user@email.com);
               EOF
+  backoffLimit: 0

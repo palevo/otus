@@ -13,10 +13,3 @@ chart: {{ .Chart.Name }}-{{ .Chart.Version }}
 {{- define "postgresql.uri" -}}
     {{- printf "jdbc:postgresql://%s-postgresql:%s/%s" .Release.Name .Values.postgresql.service.port .Values.postgresql.postgresqlDatabase -}}
 {{- end -}}
-
-{{- define "postgresql.initdb" -}}
-psql {{ include "postgresql.uri" . }} <<'EOF'
-truncate tbl_users;
-insert into tbl_users (id, name, email) values (1, 'User Name', 'user@email.com);
-EOF
-{{- end }}
