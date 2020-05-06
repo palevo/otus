@@ -11,5 +11,8 @@ chart: {{ .Chart.Name }}-{{ .Chart.Version }}
 {{- end -}}
 
 {{- define "postgresql.uri" -}}
-    {{- printf "jdbc:postgresql://%s-postgresql:%s/%s" .Release.Name .Values.postgresql.service.port .Values.postgresql.postgresqlDatabase -}}
+    {{- printf "%s-postgresql:%s/%s" .Release.Name .Values.postgresql.service.port .Values.postgresql.postgresqlDatabase -}}
+{{- end -}}
+{{- define "postgresql.jdbc" -}}
+jdbc:postgresql://{{ include "postgresql.uri" . }}
 {{- end -}}

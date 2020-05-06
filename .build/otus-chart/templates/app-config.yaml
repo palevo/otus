@@ -13,6 +13,6 @@ metadata:
   {{- include "app.labels" . | nindent 4 }}
 type: Opaque
 data:
-  POSTGRES_URI: {{ include "postgresql.uri" . | b64enc | quote }}
+  POSTGRES_URI: {{ include "postgresql.jdbc" . | b64enc | quote }}
   POSTGRES_USER: {{ .Values.postgresql.postgresqlUsername | b64enc | quote }}
   POSTGRES_PASS: {{ .Values.postgresql.postgresqlPassword | b64enc | quote }}

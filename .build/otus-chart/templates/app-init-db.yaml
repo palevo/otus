@@ -5,7 +5,7 @@ metadata:
   labels:
   {{- include "app.labels" . | nindent 4 }}
   annotations:
-    helm.sh/hook: post-upgrade
+    helm.sh/hook: post-install
 spec:
   template:
     metadata:
@@ -16,12 +16,23 @@ spec:
       containers:
         - name: {{ include "app.name" . }}-init-db
           image: postgres:latest
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "app.name" . }}-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "app.name" . }}-secret
+                  key: POSTGRES_PASS
           command:
             - sh
             - "-c"
             - |
-              psql {{ include "postgresql.uri" . }} <<'EOF'
-                truncate tbl_users;
-                insert into tbl_users (id, name, email) values (1, 'User Name', 'user@email.com);
+              psql postgresql://$POSTGRES_USER:$POSTGRES_PASS@{{ include "postgresql.uri" . }} <<'EOF'
+                TRUNCATE TABLE tbl_user;
+                INSERT INTO tbl_user (id, name, email) VALUES (1, 'User Name', 'user@email.com');
               EOF
-  backoffLimit: 0
+  backoffLimit: 5
