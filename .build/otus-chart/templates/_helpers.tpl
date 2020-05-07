@@ -5,9 +5,11 @@
 {{- end -}}
 
 {{- define "app.labels" -}}
-app: {{ include "app.name" . }}
-version: {{ .Chart.AppVersion }}
-chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+app.kubernetes.io/name: {{ include "app.name" . }}
+app.kubernetes.io/version: {{ .Chart.AppVersion }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
 {{- define "postgresql.uri" -}}
