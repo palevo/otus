@@ -27,3 +27,5 @@ postgresql:
     port: "5432"
   persistence:
     size: 1Gi
+  volumePermissions:
+    enabled: true
