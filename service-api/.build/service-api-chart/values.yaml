@@ -3,7 +3,7 @@ app:
   port: 8000
   replicaCount: 2
   image:
-    repository: palevo/otus
+    repository: palevo/otus-api-service
   metrics:
     enabled: true
 
