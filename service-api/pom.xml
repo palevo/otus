@@ -10,7 +10,7 @@
     </parent>
 
     <groupId>ru.otus</groupId>
-    <artifactId>otus-api-service</artifactId>
+    <artifactId>service-api</artifactId>
     <version>0.3.0-rc.2</version>
 
     <name>OTUS.ru/api</name>
@@ -79,7 +79,7 @@
     </dependencies>
 
     <build>
-        <finalName>otus-service</finalName>
+        <finalName>otus</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

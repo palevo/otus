@@ -8,7 +8,7 @@
     </formats>
 
     <includeBaseDirectory>true</includeBaseDirectory>
-    <baseDirectory>otus</baseDirectory>
+    <baseDirectory>otus-service</baseDirectory>
 
     <fileSets>
         <fileSet>
@@ -24,7 +24,7 @@
             <unpack>false</unpack>
             <scope>runtime</scope>
             <includes>
-                <include>ru.otus:otus-api-service:jar:*</include>
+                <include>ru.otus:service-api:jar:*</include>
             </includes>
         </dependencySet>
     </dependencySets>

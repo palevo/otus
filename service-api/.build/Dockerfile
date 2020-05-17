@@ -3,5 +3,5 @@ LABEL maintainer="a.osipov.it@gmail.com"
 RUN apk update && apk upgrade && apk add bash
 COPY target/otus-application /srv
 WORKDIR /srv/otus-service
-ENTRYPOINT ["java", "-jar", "otus-api-service.jar"]
+ENTRYPOINT ["java", "-jar", "service-api.jar"]
 EXPOSE 8000
