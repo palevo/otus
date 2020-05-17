@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "app.name" . }}-stresstest
+  labels:
+  {{- include "app.labels" . | nindent 4 }}
+  annotations:
+    helm.sh/hook: post-upgrade
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }}-stresstest
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: {{ include "app.name" . }}-stresstest
+          image: jordi/ab:latest
+          env:
+            - name: HOST
+              value: {{ .Values.ingress.host }}
+            - name: SERVICE
+              value: {{ include "app.name" . }}-ingress
+          command:
+            - sh
+            - "-c"
+            - "while sleep 3; do ab -n 50 -c 5 -H'Host: $HOST' 172.20.0.2/otusapp/users; done"
+            - "&"
+  backoffLimit: 5

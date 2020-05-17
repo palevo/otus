@@ -14,7 +14,7 @@ spec:
     matchLabels:
   {{- include "app.labels" . | nindent 6 }}
   endpoints:
-    - interval: 5s
+    - interval: 15s
       port: http
       path: /actuator/prometheus
   {{- end -}}

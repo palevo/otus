@@ -1,0 +1,17 @@
+config:
+  datasource:
+    host: otus-postgresql
+    user: admin
+    # Only one of password and passwordSecret can be specified
+    password: admin
+    # Specify passwordSecret if DB password is stored in secret.
+    passwordSecret: {}
+    # Secret name
+    #  name:
+    # Password key inside secret
+    #  key:
+    port: "5432"
+    database: 'otus-db'
+    sslmode: disable
+  disableDefaultMetrics: false
+  queries: |-

@@ -1,0 +1,404 @@
+{
+	"info": {
+		"_postman_id": "79082dab-4f60-4983-8de6-ab5e014ff286",
+		"name": "otus",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "afed9158-a0a1-4129-8f0a-a40e43f818af",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Health status is OK\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.status).to.eql(\"OK\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseURL}}/health",
+					"protocol": "http",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"health"
+					]
+				},
+				"description": "Версия + health status"
+			},
+			"response": []
+		},
+		{
+			"name": "Create user #1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "efb368b7-f77d-4782-8193-b7ffa4474531",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"firstUserId\", jsonData.id);",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "User Name #1",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "user@email.com",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://{{baseURL}}/users",
+					"protocol": "http",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users"
+					]
+				},
+				"description": "Создание пользователя"
+			},
+			"response": []
+		},
+		{
+			"name": "Get user #1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "da084c9d-2d94-4887-b992-7d7940e27cc3",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "http://{{baseURL}}/users/{{firstUserId}}",
+					"protocol": "http",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users",
+						"{{firstUserId}}"
+					]
+				},
+				"description": "Получить пользователя по ИД"
+			},
+			"response": []
+		},
+		{
+			"name": "Create user #2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "efb368b7-f77d-4782-8193-b7ffa4474531",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"secondUserId\", jsonData.id);",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "User Name #2",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "user@email.com",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://{{baseURL}}/users",
+					"protocol": "http",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users"
+					]
+				},
+				"description": "Создание пользователя"
+			},
+			"response": []
+		},
+		{
+			"name": "Update user #2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9a605803-ccf4-4092-9b52-2af686cb20fe",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "Updated User Name #2",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "updated_user@email.com",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://{{baseURL}}/users/{{secondUserId}}",
+					"protocol": "http",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users",
+						"{{secondUserId}}"
+					]
+				},
+				"description": "Изменение пользователя"
+			},
+			"response": []
+		},
+		{
+			"name": "Get user #2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "da084c9d-2d94-4887-b992-7d7940e27cc3",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "http://{{baseURL}}/users/{{secondUserId}}",
+					"protocol": "http",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users",
+						"{{secondUserId}}"
+					]
+				},
+				"description": "Получить пользователя по ИД"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete user #1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "624df91f-451b-4841-bcee-fef54c32f939",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseURL}}/users/{{firstUserId}}",
+					"protocol": "http",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users",
+						"{{firstUserId}}"
+					]
+				},
+				"description": "Удалить пользователя по ИД"
+			},
+			"response": []
+		},
+		{
+			"name": "Get users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3040d9c4-3896-4e9c-86a1-a88e3b0bb9df",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "http://{{baseURL}}/users",
+					"protocol": "http",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"users"
+					]
+				},
+				"description": "Получить список пользователей"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "a039bb93-25bb-4e9e-bf2b-379b802e62a7",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "677cf80a-2492-45ec-b1e8-960683e35560",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "36192136-abab-4823-962f-8168956dd777",
+			"key": "baseURL",
+			"value": "arch.homework/otusapp",
+			"type": "string"
+		},
+		{
+			"id": "1da436e6-0f42-47a5-97ff-b6a32b8a1c83",
+			"key": "firstUserId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "67172f4a-e15a-448f-a2a5-3c069b3ac284",
+			"key": "secondUserId",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
