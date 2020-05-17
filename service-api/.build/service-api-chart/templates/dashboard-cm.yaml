@@ -10,6 +10,7 @@ data:
       "annotations": {
         "list": [
         {
+          "$$hashKey": "object:178",
           "builtIn": 1,
           "datasource": "-- Grafana --",
           "enable": true,
@@ -23,7 +24,6 @@ data:
       "editable": true,
       "gnetId": null,
       "graphTooltip": 0,
-      "id": 26,
       "links": [],
       "panels": [
       {
@@ -81,9 +81,9 @@ data:
         "steppedLine": false,
         "targets": [
         {
-          "expr": "sum(rate(nginx_ingress_controller_request_duration_seconds_count{path=~\"/otusapp.*\"}[1m])) by (status)",
+          "expr": "sum(rate(nginx_ingress_controller_request_duration_seconds_count{host=\"arch.homework\"}[1m])) by(host)",
           "interval": "",
-          "legendFormat": "{{`{{status}}`}}",
+          "legendFormat": "{{`{{host}}`}}",
           "refId": "A"
         }
         ],
@@ -449,7 +449,7 @@ data:
         "fill": 1,
         "fillGradient": 0,
         "gridPos": {
-          "h": 8,
+          "h": 11,
           "w": 8,
           "x": 0,
           "y": 10
@@ -457,13 +457,14 @@ data:
         "hiddenSeries": false,
         "id": 2,
         "legend": {
-          "avg": false,
-          "current": false,
-          "max": false,
-          "min": false,
+          "alignAsTable": true,
+          "avg": true,
+          "current": true,
+          "max": true,
+          "min": true,
           "show": true,
           "total": false,
-          "values": false
+          "values": true
         },
         "lines": true,
         "linewidth": 1,
@@ -481,10 +482,10 @@ data:
         "steppedLine": false,
         "targets": [
         {
-          "expr": "sum(rate(http_server_requests_seconds_count{uri=~\"/users.*\"}[1m])) by (status)",
+          "expr": "sum(rate(http_server_requests_seconds_count[1m])) by (uri)",
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "{{`{{status}}`}}",
+          "legendFormat": "{{`{{uri}}`}}",
           "refId": "A"
         }
         ],
@@ -508,6 +509,7 @@ data:
         },
         "yaxes": [
         {
+          "$$hashKey": "object:263",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -516,6 +518,7 @@ data:
           "show": true
         },
         {
+          "$$hashKey": "object:264",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -578,7 +581,7 @@ data:
         "fill": 1,
         "fillGradient": 0,
         "gridPos": {
-          "h": 8,
+          "h": 11,
           "w": 8,
           "x": 8,
           "y": 10
@@ -735,7 +738,7 @@ data:
         "fill": 1,
         "fillGradient": 0,
         "gridPos": {
-          "h": 8,
+          "h": 11,
           "w": 8,
           "x": 16,
           "y": 10
@@ -841,7 +844,7 @@ data:
           "h": 7,
           "w": 24,
           "x": 0,
-          "y": 18
+          "y": 21
         },
         "hiddenSeries": false,
         "id": 8,
@@ -870,7 +873,7 @@ data:
         "steppedLine": false,
         "targets": [
         {
-          "expr": "resets(http_server_requests_seconds_count[1m])",
+          "expr": "sum(resets(http_server_requests_seconds_count[1m])) by (pod)",
           "interval": "",
           "intervalFactor": 1,
           "legendFormat": "{{`{{pod}}`}}",
@@ -937,5 +940,5 @@ data:
       "variables": {
         "list": []
       },
-      "version": 18
+      "version": 1
     }
