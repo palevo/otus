@@ -1,7 +1,7 @@
 FROM openjdk:8-alpine
 LABEL maintainer="a.osipov.it@gmail.com"
 RUN apk update && apk upgrade && apk add bash
-COPY target/otus-palevo-application /srv
-WORKDIR /srv/otus-palevo
-ENTRYPOINT ["java", "-jar", "palevo.jar"]
+COPY target/otus-application /srv
+WORKDIR /srv/otus-service
+ENTRYPOINT ["java", "-jar", "otus-api-service.jar"]
 EXPOSE 8000

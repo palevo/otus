@@ -8,23 +8,12 @@
     </formats>
 
     <includeBaseDirectory>true</includeBaseDirectory>
-    <baseDirectory>otus-palevo</baseDirectory>
+    <baseDirectory>otus</baseDirectory>
 
     <fileSets>
         <fileSet>
             <directory>config/</directory>
-            <outputDirectory>/</outputDirectory>
-            <includes>
-                <include>startup.sh</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>config/</directory>
             <outputDirectory>/config</outputDirectory>
-            <excludes>
-                <exclude>application.sh</exclude>
-                <exclude>startup.sh</exclude>
-            </excludes>
         </fileSet>
     </fileSets>
 
@@ -35,7 +24,7 @@
             <unpack>false</unpack>
             <scope>runtime</scope>
             <includes>
-                <include>ru.otus:palevo:jar:*</include>
+                <include>ru.otus:otus-api-service:jar:*</include>
             </includes>
         </dependencySet>
     </dependencySets>

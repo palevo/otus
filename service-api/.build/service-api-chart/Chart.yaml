@@ -1,6 +1,6 @@
 apiVersion: v2
-name: otus-chart
-description: Otus application
+name: service-api-chart
+description: Otus. Api service application
 type: application
 version: 0.8.0
 appVersion: 0.3.0-rc.2

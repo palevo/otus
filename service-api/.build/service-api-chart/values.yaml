@@ -1,5 +1,5 @@
 app:
-  name: app
+  name: api
   port: 8000
   replicaCount: 2
   image:

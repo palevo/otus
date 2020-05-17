@@ -12,8 +12,11 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
+{{- define "postgresql.name" -}}
+{{ .Release.Name }}-postgresql
+{{- end -}}
 {{- define "postgresql.uri" -}}
-    {{- printf "%s-postgresql:%s/%s" .Release.Name .Values.postgresql.service.port .Values.postgresql.postgresqlDatabase -}}
+    {{- printf "%s:%s/%s" (include "postgresql.name" .) .Values.postgresql.service.port .Values.postgresql.postgresqlDatabase -}}
 {{- end -}}
 {{- define "postgresql.jdbc" -}}
 jdbc:postgresql://{{ include "postgresql.uri" . }}

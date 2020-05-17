@@ -5,7 +5,9 @@ metadata:
   labels:
   {{- include "app.labels" . | nindent 4 }}
   annotations:
-    helm.sh/hook: post-install
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": hook-succeeded
 spec:
   template:
     metadata:
@@ -13,6 +15,20 @@ spec:
         app: {{ include "app.name" . }}-init-db
     spec:
       restartPolicy: Never
+      initContainers:
+        - name: check-db-ready
+          image: postgres:latest
+          env:
+            - name: POSTGRES_HOST
+              value: {{ include "postgresql.name" . | quote }}
+            - name: POSTGRES_PORT
+              value: {{ .Values.postgresql.service.port | quote }}
+          command:
+            - sh
+            - "-c"
+            - |
+              until pg_isready -h $POSTGRES_HOST  -p  $POSTGRES_PORT;
+              do echo waiting for database; sleep 2; done;
       containers:
         - name: {{ include "app.name" . }}-init-db
           image: postgres:latest
@@ -35,4 +51,4 @@ spec:
                 TRUNCATE TABLE tbl_user;
                 INSERT INTO tbl_user (id, name, email) VALUES (1, 'User Name', 'user@email.com');
               EOF
-  backoffLimit: 5
+  backoffLimit: 0
