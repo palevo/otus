@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: otus-stresstest
+  annotations:
+    helm.sh/hook: post-upgrade
+spec:
+  template:
+    metadata:
+      labels:
+        app: otus-stresstest
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: otus-stresstest
+          image: jordi/ab:latest
+          command:
+            - sh
+            - "-c"
+            - "while sleep 3; do ab -n 50 -c 5 -H'Host: arch.homework' http://otus-ingress/otusapp/users; done"
+  backoffLimit: 0
