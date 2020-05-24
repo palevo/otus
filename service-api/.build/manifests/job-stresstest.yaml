@@ -3,7 +3,8 @@ kind: Job
 metadata:
   name: otus-stresstest
   annotations:
-    helm.sh/hook: post-upgrade
+    "helm.sh/hook": post-upgrade
+    "helm.sh/hook-delete-policy": hook-succeeded
 spec:
   template:
     metadata:
@@ -14,8 +15,14 @@ spec:
       containers:
         - name: otus-stresstest
           image: jordi/ab:latest
+          env:
+            - name: HOST
+              value: "arch.homework"
+            - name: IP
+              value: "172.20.0.2"
           command:
             - sh
             - "-c"
-            - "while sleep 3; do ab -n 50 -c 5 -H'Host: arch.homework' http://otus-ingress/otusapp/users; done"
+            - "while sleep 3; do ab -n 50 -c 5 -H \"Host: $HOST\" http://$IP/otusapp/users; done"
+            - ">/dev/null &"
   backoffLimit: 0
