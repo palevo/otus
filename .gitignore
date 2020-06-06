@@ -1,3 +1,6 @@
+# Maven
+*.versionsBackup
+
 # Compiled class file
 *.class
 

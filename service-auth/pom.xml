@@ -10,7 +10,7 @@
     </parent>
 
     <groupId>ru.otus.app</groupId>
-    <artifactId>service-api</artifactId>
+    <artifactId>service-auth</artifactId>
     <version>0.4.0</version>
 
     <dependencies>
