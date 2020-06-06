@@ -12,4 +12,12 @@ import ru.otus.palevo.model.User;
  */
 public interface UserRepository extends JpaRepository<User, Long> {
 
+    /**
+     * Find user by email & password
+     *
+     * @param email    user email
+     * @param password user password
+     * @return user
+     */
+    User findByEmailAndPassword(String email, String password);
 }

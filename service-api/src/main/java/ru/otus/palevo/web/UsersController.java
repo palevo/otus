@@ -50,7 +50,7 @@ public class UsersController implements ApplicationListener<UserEvent> {
 
     @PutMapping
     public Mono<ResponseEntity<User>> createUser(@Valid @ModelAttribute User user) {
-        return service.create(user.getName(), user.getEmail())
+        return service.create(user.getEmail(), user.getPassword(), user.getName())
                 .map(ResponseEntity::ok).defaultIfEmpty(ResponseEntity.badRequest().build());
     }
 
