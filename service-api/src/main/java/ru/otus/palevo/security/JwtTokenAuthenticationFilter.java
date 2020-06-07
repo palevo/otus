@@ -39,10 +39,8 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-
         // 1. get the authentication header. Tokens are supposed to be passed in the authentication header
         String header = request.getHeader(jwtConfig.getHeader());
-
         // 2. validate the header and check the prefix
         if (header == null || !header.startsWith(jwtConfig.getPrefix())) {
             chain.doFilter(request, response);        // If not valid, go to the next filter.
@@ -59,7 +57,6 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
         String token = header.replace(jwtConfig.getPrefix(), "");
 
         try {    // exceptions might be thrown in creating the claims if for example the token is expired
-
             // 4. Validate the token
             Claims claims = Jwts.parser()
                     .setSigningKey(jwtConfig.getSecret().getBytes())
@@ -81,7 +78,6 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
                 // Now, user is authenticated
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
-
         } catch (Exception e) {
             // In case of failure. Make sure it's clear; so guarantee user won't be authenticated
             SecurityContextHolder.clearContext();
