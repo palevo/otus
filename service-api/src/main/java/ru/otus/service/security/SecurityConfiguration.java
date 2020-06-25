@@ -1,6 +1,9 @@
 package ru.otus.service.security;
 
+import java.nio.charset.StandardCharsets;
+
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -12,7 +15,12 @@ import reactor.core.publisher.Mono;
 import ru.otus.common.service.JWTService;
 import ru.otus.service.security.bearer.ServerHttpBearerAuthenticationConverter;
 
+import static org.springframework.http.HttpMethod.OPTIONS;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.security.config.web.server.SecurityWebFiltersOrder.AUTHENTICATION;
+
+import static reactor.core.publisher.Mono.just;
 
 /**
  * Webflux security configuration
@@ -22,6 +30,9 @@ import static org.springframework.security.config.web.server.SecurityWebFiltersO
  */
 @EnableWebFluxSecurity
 public class SecurityConfiguration {
+
+    private static final byte[] UNAUTHORIZED_VALUE = "UNAUTHORIZED".getBytes(StandardCharsets.UTF_8);
+    private static final byte[] FORBIDDEN_VALUE = "FORBIDDEN".getBytes(StandardCharsets.UTF_8);
 
     private final JWTService jwt;
 
@@ -45,9 +56,23 @@ public class SecurityConfiguration {
                 .formLogin().disable()
                 .logout().disable()
 
+                .exceptionHandling()
+                .authenticationEntryPoint((swe, e) -> {
+                    ServerHttpResponse response = swe.getResponse();
+                    response.setStatusCode(UNAUTHORIZED);
+                    return response.writeWith(just(response.bufferFactory().wrap(UNAUTHORIZED_VALUE)));
+                })
+                .accessDeniedHandler((swe, e) -> {
+                    ServerHttpResponse response = swe.getResponse();
+                    response.setStatusCode(FORBIDDEN);
+                    return response.writeWith(just(response.bufferFactory().wrap(FORBIDDEN_VALUE)));
+                })
+
+                .and()
                 .authorizeExchange()
-                .pathMatchers("/openapi/**", "/actuator/**").permitAll()
-                .pathMatchers("/**").authenticated()
+                .pathMatchers(OPTIONS).permitAll()
+                .pathMatchers("/", "/openapi/**", "/actuator/**").permitAll()
+                .anyExchange().authenticated()
 
                 .and()
                 .addFilterAt(bearerAuthenticationFilter(), AUTHENTICATION)

@@ -1,5 +1,7 @@
 package ru.otus.service.security;
 
+import java.nio.charset.StandardCharsets;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
@@ -28,7 +30,7 @@ import static org.springframework.http.HttpStatus.*;
 import static org.springframework.security.config.web.server.SecurityWebFiltersOrder.AUTHENTICATION;
 import static org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers.pathMatchers;
 
-import static reactor.core.publisher.Mono.fromRunnable;
+import static reactor.core.publisher.Mono.just;
 
 /**
  * Webflux security configuration
@@ -39,6 +41,9 @@ import static reactor.core.publisher.Mono.fromRunnable;
 @Slf4j
 @EnableWebFluxSecurity
 public class SecurityConfiguration {
+
+    private static final byte[] UNAUTHORIZED_VALUE = "UNAUTHORIZED".getBytes(StandardCharsets.UTF_8);
+    private static final byte[] FORBIDDEN_VALUE = "FORBIDDEN".getBytes(StandardCharsets.UTF_8);
 
     private final UserService users;
     private final JWTService jwt;
@@ -66,8 +71,16 @@ public class SecurityConfiguration {
                 .logout().disable()
 
                 .exceptionHandling()
-                .authenticationEntryPoint((swe, e) -> fromRunnable(() -> swe.getResponse().setStatusCode(UNAUTHORIZED)))
-                .accessDeniedHandler((swe, e) -> fromRunnable(() -> swe.getResponse().setStatusCode(FORBIDDEN)))
+                .authenticationEntryPoint((swe, e) -> {
+                    ServerHttpResponse response = swe.getResponse();
+                    response.setStatusCode(UNAUTHORIZED);
+                    return response.writeWith(just(response.bufferFactory().wrap(UNAUTHORIZED_VALUE)));
+                })
+                .accessDeniedHandler((swe, e) -> {
+                    ServerHttpResponse response = swe.getResponse();
+                    response.setStatusCode(FORBIDDEN);
+                    return response.writeWith(just(response.bufferFactory().wrap(FORBIDDEN_VALUE)));
+                })
 
                 .and()
                 .authorizeExchange()
