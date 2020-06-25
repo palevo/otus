@@ -4,6 +4,7 @@ apps:
   auth:
     name: auth
     port: 8000
+    contextPath: /auth-service
     enabled: true
     replicaCount: 2
     image:
@@ -15,7 +16,7 @@ apps:
       port: 8080
     ingress:
       host: arch.homework
-      path: /otusapp/auth($|/)(.*)
+      path: /otusapp/auth-service($|/)(.*)
       annotations: {
         nginx.ingress.kubernetes.io/rewrite-target: /$2
       }

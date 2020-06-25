@@ -31,6 +31,8 @@ spec:
               value: {{ include "apps.auth.name" . | quote }}
             - name: server.port
               value: {{ .Values.apps.auth.port | quote }}
+            - name: server.servlet.context-path
+              value: {{ .Values.apps.auth.contextPath | quote }}
             - name: spring.datasource.url
               valueFrom:
                 secretKeyRef:

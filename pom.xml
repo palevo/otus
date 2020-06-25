@@ -11,7 +11,7 @@
 
     <groupId>ru.otus</groupId>
     <artifactId>app</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 
     <name>OTUS.ru</name>
     <description>OTUS application</description>
@@ -26,8 +26,9 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <ext.guava.version>23.0</ext.guava.version>
         <ext.spring-openapi.version>1.4.0</ext.spring-openapi.version>
+        <ext.jjwt.version>0.9.1</ext.jjwt.version>
+        <ext.guava.version>23.0</ext.guava.version>
     </properties>
 
     <dependencyManagement>
@@ -36,6 +37,18 @@
                 <groupId>ru.otus.app</groupId>
                 <artifactId>common</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <!-- Spring openapi -->
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-webflux-ui</artifactId>
+                <version>${ext.spring-openapi.version}</version>
+            </dependency>
+            <!-- JWT -->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>${ext.jjwt.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -48,16 +61,13 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
+
+        <!-- Spring openapi -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-webflux-ui</artifactId>
         </dependency>
 
         <!-- Spring security, authentication with JWT -->
@@ -65,23 +75,21 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+        <!-- JWT -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
-            <version>0.9.1</version>
         </dependency>
 
+        <!-- Spring actuator -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
         <!-- Prometheus -->
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
-        </dependency>
-
-        <!-- Spring openapi -->
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-webflux-ui</artifactId>
-            <version>${ext.spring-openapi.version}</version>
         </dependency>
 
         <!-- Postgres -->
