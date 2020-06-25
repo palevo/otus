@@ -1,3 +1,4 @@
+{{- if .Values.apps.api.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -58,3 +59,4 @@ spec:
               port: http
             initialDelaySeconds: 10
             periodSeconds: 5
+  {{- end -}}

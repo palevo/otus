@@ -1,3 +1,4 @@
+{{- if .Values.apps.api.enabled -}}
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
@@ -15,3 +16,4 @@ spec:
             backend:
               serviceName: {{ include "apps.api.name" . }}-service
               servicePort: {{ .Values.apps.api.service.port }}
+  {{- end -}}

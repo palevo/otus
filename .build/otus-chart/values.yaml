@@ -4,6 +4,7 @@ apps:
   auth:
     name: auth
     port: 8000
+    enabled: true
     replicaCount: 2
     image:
       repository: palevo/otus-service-auth
@@ -23,6 +24,7 @@ apps:
   api:
     name: api
     port: 8000
+    enabled: false
     replicaCount: 2
     image:
       repository: palevo/otus-service-api

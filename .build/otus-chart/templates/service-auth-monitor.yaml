@@ -1,4 +1,4 @@
-{{- if .Values.apps.auth.metrics.enabled -}}
+{{- if and (eq .Values.apps.auth.enabled true) (eq .Values.apps.auth.metrics.enabled true) -}}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
