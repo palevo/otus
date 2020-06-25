@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "apps.auth.name" . }}-service
+  labels:
+    app.kubernetes.io/name: {{ include "apps.auth.name" . }}
+  {{- include "app.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.apps.auth.service.type }}
+  ports:
+    - port: {{ .Values.apps.auth.service.port }}
+      targetPort: auth-http
+      protocol: TCP
+      name: auth-http
+  selector:
+    app: {{ include "apps.auth.name" . }}

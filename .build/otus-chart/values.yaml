@@ -1,0 +1,56 @@
+apps:
+
+  # Application: otus-service-auth
+  auth:
+    name: auth
+    port: 8000
+    replicaCount: 2
+    image:
+      repository: palevo/otus-service-auth
+    metrics:
+      enabled: true
+    service:
+      type: ClusterIP
+      port: 8080
+    ingress:
+      host: arch.homework
+      path: /otusapp/auth($|/)(.*)
+      annotations: {
+        nginx.ingress.kubernetes.io/rewrite-target: /$2
+      }
+
+  # Application: otus-service-api
+  api:
+    name: api
+    port: 8000
+    replicaCount: 2
+    image:
+      repository: palevo/otus-service-api
+    metrics:
+      enabled: true
+    service:
+      type: ClusterIP
+      port: 8081
+    ingress:
+      host: arch.homework
+      path: /otusapp($|/)(.*)
+      annotations: {
+        nginx.ingress.kubernetes.io/auth-url: "/auth",
+        nginx.ingress.kubernetes.io/auth-signin: "/auth/login",
+        nginx.ingress.kubernetes.io/auth-response-headers: "Authorization",
+        nginx.ingress.kubernetes.io/rewrite-target: /$2
+      }
+
+
+# Postgres SQL
+postgresql:
+  enabled: true
+  postgresqlUsername: admin
+  postgresqlPassword: admin
+  postgresqlDatabase: otus-db
+  service:
+    port: "5432"
+  persistence:
+    size: 1Gi
+  volumePermissions:
+    enabled: true

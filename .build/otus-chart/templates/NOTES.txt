@@ -1,0 +1,3 @@
+Otus application:
+- authentication service (nginx forward auth)
+- api service

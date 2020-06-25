@@ -1,48 +1,49 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "app.name" . }}
+  name: {{ include "apps.api.name" . }}
   labels:
+    app.kubernetes.io/name: {{ include "apps.api.name" . }}
   {{- include "app.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.app.replicaCount }}
+  replicas: {{ .Values.apps.api.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "app.name" . }}
+      app: {{ include "apps.api.name" . }}
   template:
     metadata:
       labels:
-        app: {{ include "app.name" . }}
+        app: {{ include "apps.api.name" . }}
     spec:
       containers:
-        - name: {{ include "app.name" . }}
-          image: "{{ .Values.app.image.repository }}:{{ .Chart.AppVersion }}"
+        - name: {{ include "apps.api.name" . }}
+          image: "{{ .Values.apps.api.image.repository }}:{{ .Chart.AppVersion }}"
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
-              containerPort: {{ .Values.app.port }}
+              containerPort: {{ .Values.apps.api.port }}
               protocol: TCP
           env:
             - name: otus.version
               value: {{ .Chart.AppVersion | quote }}
             - name: spring.application.name
-              value: {{ include "app.name" . | quote }}
+              value: {{ include "apps.api.name" . | quote }}
             - name: server.port
-              value: {{ .Values.app.port | quote }}
+              value: {{ .Values.apps.api.port | quote }}
             - name: spring.datasource.url
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "app.name" . }}-secret
+                  name: {{ .Release.Name }}-secret
                   key: POSTGRES_URI
             - name: spring.datasource.username
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "app.name" . }}-secret
+                  name: {{ .Release.Name }}-secret
                   key: POSTGRES_USER
             - name: spring.datasource.password
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "app.name" . }}-secret
+                  name: {{ .Release.Name }}-secret
                   key: POSTGRES_PASS
           livenessProbe:
             httpGet:

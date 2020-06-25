@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "app.name" . }}-init-db
+  name: {{ .Release.Name }}-init-db
   labels:
   {{- include "app.labels" . | nindent 4 }}
   annotations:
@@ -12,7 +12,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ include "app.name" . }}-init-db
+        app: {{ .Release.Name }}-init-db
     spec:
       restartPolicy: Never
       initContainers:
@@ -30,18 +30,18 @@ spec:
               until pg_isready -h $POSTGRES_HOST  -p  $POSTGRES_PORT;
               do echo waiting for database; sleep 2; done;
       containers:
-        - name: {{ include "app.name" . }}-init-db
+        - name: {{ .Release.Name }}-init-db
           image: postgres:latest
           env:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "app.name" . }}-secret
+                  name: {{ .Release.Name }}-secret
                   key: POSTGRES_USER
             - name: POSTGRES_PASS
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "app.name" . }}-secret
+                  name: {{ .Release.Name }}-secret
                   key: POSTGRES_PASS
           command:
             - sh

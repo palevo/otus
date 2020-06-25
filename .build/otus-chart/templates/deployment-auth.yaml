@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "apps.auth.name" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "apps.auth.name" . }}
+  {{- include "app.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.apps.auth.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "apps.auth.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "apps.auth.name" . }}
+    spec:
+      containers:
+        - name: {{ include "apps.auth.name" . }}
+          image: "{{ .Values.apps.auth.image.repository }}:{{ .Chart.AppVersion }}"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: auth-http
+              containerPort: {{ .Values.apps.auth.port }}
+              protocol: TCP
+          env:
+            - name: otus.version
+              value: {{ .Chart.AppVersion | quote }}
+            - name: spring.application.name
+              value: {{ include "apps.auth.name" . | quote }}
+            - name: server.port
+              value: {{ .Values.apps.auth.port | quote }}
+            - name: spring.datasource.url
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-secret
+                  key: POSTGRES_URI
+            - name: spring.datasource.username
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-secret
+                  key: POSTGRES_USER
+            - name: spring.datasource.password
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-secret
+                  key: POSTGRES_PASS
+          livenessProbe:
+            httpGet:
+              path: /
+              port: auth-http
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 2
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: auth-http
+            initialDelaySeconds: 10
+            periodSeconds: 5

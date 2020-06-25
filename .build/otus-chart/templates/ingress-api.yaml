@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "apps.api.name" . }}-ingress
+  labels:
+  {{- include "app.labels" . | nindent 4 }}
+  annotations:
+  {{- toYaml .Values.apps.api.ingress.annotations | nindent 4 }}
+spec:
+  rules:
+    - host: {{ .Values.apps.api.ingress.host }}
+      http:
+        paths:
+          - path: {{ .Values.apps.api.ingress.path }}
+            backend:
+              serviceName: {{ include "apps.api.name" . }}-service
+              servicePort: {{ .Values.apps.api.service.port }}

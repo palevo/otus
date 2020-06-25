@@ -1,12 +1,12 @@
-{{- if .Values.app.metrics.enabled -}}
+{{- if .Values.apps.auth.metrics.enabled -}}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "app.name" . }}
+  name: {{ include "apps.auth.name" . }}
   labels:
   {{- include "app.labels" . | nindent 4 }}
 spec:
-  jobLabel: {{ include "app.name" . }}
+  jobLabel: {{ include "apps.auth.name" . }}
   namespaceSelector:
     matchNames:
       - "{{ $.Release.Namespace }}"
@@ -15,6 +15,6 @@ spec:
   {{- include "app.labels" . | nindent 6 }}
   endpoints:
     - interval: 5s
-      port: http
+      port: auth-http
       path: /actuator/prometheus
   {{- end -}}
