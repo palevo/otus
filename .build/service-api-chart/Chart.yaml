@@ -2,8 +2,8 @@ apiVersion: v2
 name: service-api-chart
 description: Otus. Api service application
 type: application
-version: 0.8.0
-appVersion: 0.3.0-rc.2
+version: 1.0.0
+appVersion: 1.0.0
 maintainers:
   - name: Anton Osipov
     email: a.osipov.it@gmail.com

@@ -6,12 +6,12 @@
     <parent>
         <groupId>ru.otus</groupId>
         <artifactId>app</artifactId>
-        <version>0.4.0</version>
+        <version>1.0.0</version>
     </parent>
 
     <groupId>ru.otus.app</groupId>
     <artifactId>service-auth</artifactId>
-    <version>0.4.0</version>
+    <version>1.0.0</version>
 
     <dependencies>
         <dependency>
@@ -21,30 +21,11 @@
     </dependencies>
 
     <build>
-        <finalName>otus</finalName>
+        <finalName>otus-application</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <descriptors>
-                        <descriptor>assembly/assembly.xml</descriptor>
-                    </descriptors>
-                    <outputDirectory>target/</outputDirectory>
-                    <workDirectory>target/work</workDirectory>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

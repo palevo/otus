@@ -1,0 +1,71 @@
+otus:
+  version: app-version
+  api-version: v1
+  description: Authorization service
+
+# Swagger
+springdoc:
+  swagger-ui:
+    path: /openapi
+  api-docs:
+    path: /openapi/api-docs
+  webjars:
+    prefix: /openapi/webjars
+
+# Server
+server:
+  port: 8000
+
+# Spring
+spring:
+  application:
+    name: app
+  pid:
+    file: run.pid
+    fail-on-write-error: true
+  main:
+    banner-mode: off
+    allow-bean-definition-overriding: true
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
+  # Postgres
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:5432/otus-db
+    username: postgres
+    password: admin
+  # JPA
+  jpa:
+    generate-ddl: true
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+        schema_update:
+          unique_constraint_strategy: RECREATE_QUIETLY
+  # Jackson
+  jackson:
+    deserialization.fail_on_unknown_properties: false
+    default-property-inclusion: NON_NULL
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: true
+      FAIL_ON_EMPTY_BEANS: false
+
+# Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: true
+      percentiles:
+        http:
+          server:
+            requests: 0.5, 0.95, 0.99
