@@ -117,7 +117,7 @@ public class SecurityConfiguration {
             response.setStatusCode(OK);
             return response.setComplete();
         });
-        filter.setRequiresLogoutMatcher(pathMatchers(POST, "/logout"));
+        filter.setRequiresLogoutMatcher(pathMatchers("/logout"));
         return filter;
     }
 
