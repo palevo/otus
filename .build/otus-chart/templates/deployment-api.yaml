@@ -25,12 +25,23 @@ spec:
               containerPort: {{ .Values.apps.api.port }}
               protocol: TCP
           env:
+            - name: otus.url
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-config
+                  key: BASE_API_URL
             - name: otus.version
               value: {{ .Chart.AppVersion | quote }}
-            - name: spring.application.name
-              value: {{ include "apps.api.name" . | quote }}
             - name: server.port
               value: {{ .Values.apps.api.port | quote }}
+            - name: springdoc.swagger-ui.path
+              value: {{ printf "%s" .Values.apps.api.paths.openapi | quote }}
+            - name: springdoc.api-docs.path
+              value: {{ printf "%s/api-docs" .Values.apps.api.paths.openapi | quote }}
+            - name: springdoc.webjars.path
+              value: {{ printf "%s/webjars" .Values.apps.api.paths.openapi | quote }}
+            - name: spring.application.name
+              value: {{ include "apps.api.name" . | quote }}
             - name: spring.datasource.url
               valueFrom:
                 secretKeyRef:
@@ -48,7 +59,7 @@ spec:
                   key: POSTGRES_PASS
           livenessProbe:
             httpGet:
-              path: /
+              path: /actuator/health
               port: http
             initialDelaySeconds: 10
             periodSeconds: 5

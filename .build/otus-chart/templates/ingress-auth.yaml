@@ -12,7 +12,15 @@ spec:
     - host: {{ .Values.apps.auth.ingress.host }}
       http:
         paths:
-          - path: {{ .Values.apps.auth.ingress.path }}
+          - path: {{ .Values.apps.auth.ingress.paths.auth }}
+            backend:
+              serviceName: {{ include "apps.auth.name" . }}-service
+              servicePort: {{ .Values.apps.auth.service.port }}
+          - path: {{ .Values.apps.auth.ingress.paths.openapi }}
+            backend:
+              serviceName: {{ include "apps.auth.name" . }}-service
+              servicePort: {{ .Values.apps.auth.service.port }}
+          - path: {{ .Values.apps.auth.ingress.paths.actuator }}
             backend:
               serviceName: {{ include "apps.auth.name" . }}-service
               servicePort: {{ .Values.apps.auth.service.port }}

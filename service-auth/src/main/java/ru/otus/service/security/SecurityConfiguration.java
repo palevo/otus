@@ -2,32 +2,31 @@ package ru.otus.service.security;
 
 import java.nio.charset.StandardCharsets;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.server.reactive.ServerHttpResponse;
-import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
 import org.springframework.security.web.server.authentication.ServerFormLoginAuthenticationConverter;
 import org.springframework.security.web.server.authentication.logout.LogoutWebFilter;
-import org.springframework.security.web.server.context.SecurityContextServerWebExchange;
 import org.springframework.security.web.server.context.WebSessionServerSecurityContextRepository;
+import org.springframework.web.server.WebFilter;
 
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Mono;
 import ru.otus.common.service.JWTService;
 import ru.otus.common.service.UserService;
 import ru.otus.service.security.basic.AuthenticationSuccessHandler;
 import ru.otus.service.security.basic.BasicUserDetailService;
+import ru.otus.service.security.basic.JWTAuthenticationWebFilter;
 
-import static org.springframework.http.HttpMethod.OPTIONS;
-import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.*;
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.security.config.web.server.SecurityWebFiltersOrder.AUTHENTICATION;
+import static org.springframework.security.config.web.server.SecurityWebFiltersOrder.AUTHORIZATION;
 import static org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers.pathMatchers;
 
 import static reactor.core.publisher.Mono.just;
@@ -45,6 +44,8 @@ public class SecurityConfiguration {
     private static final byte[] UNAUTHORIZED_VALUE = "UNAUTHORIZED".getBytes(StandardCharsets.UTF_8);
     private static final byte[] FORBIDDEN_VALUE = "FORBIDDEN".getBytes(StandardCharsets.UTF_8);
 
+    @Value("${springdoc.swagger-ui.path}")
+    private String openapiBasePath;
     private final UserService users;
     private final JWTService jwt;
 
@@ -86,13 +87,13 @@ public class SecurityConfiguration {
                 .authorizeExchange()
                 .pathMatchers(OPTIONS).permitAll()
                 .pathMatchers("/auth").authenticated()
-                .pathMatchers("/", "/auth/**", "/openapi/**", "/actuator/**").permitAll()
+                .pathMatchers("/", "/login", "/logout", "/auth/**", openapiBasePath + "/**", "/actuator/**").permitAll()
                 .anyExchange().authenticated()
 
                 .and()
                 .addFilterAt(getLoginFilter(), AUTHENTICATION)
                 .addFilterAt(getLogoutFilter(), AUTHENTICATION)
-                .addFilterAt(getAuthenticationFilter(), AUTHENTICATION)
+                .addFilterAt(getJWTAuthenticationFilter(), AUTHORIZATION)
 
                 .build();
     }
@@ -121,12 +122,10 @@ public class SecurityConfiguration {
         return filter;
     }
 
-    private AuthenticationWebFilter getAuthenticationFilter() {
-        AuthenticationWebFilter filter = new AuthenticationWebFilter((ReactiveAuthenticationManager) Mono::just);
-        filter.setSecurityContextRepository(new WebSessionServerSecurityContextRepository());
-        filter.setServerAuthenticationConverter(exchange -> new SecurityContextServerWebExchange(
-                exchange, ReactiveSecurityContextHolder.getContext()).getPrincipal());
+    private WebFilter getJWTAuthenticationFilter() {
+        JWTAuthenticationWebFilter filter = new JWTAuthenticationWebFilter();
         filter.setAuthenticationSuccessHandler(new AuthenticationSuccessHandler(jwt));
+        filter.setRequiresAuthenticationMatcher(pathMatchers(GET, "/auth"));
         return filter;
     }
 }

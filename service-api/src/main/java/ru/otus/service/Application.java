@@ -12,6 +12,9 @@ import org.springframework.web.reactive.config.EnableWebFlux;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.servers.Server;
+
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * Application starter class
@@ -34,9 +37,18 @@ public class Application {
         SpringApplication.run(Application.class, args);
     }
 
+    @Value("${otus.url:}")
+    private String baseUrl;
+
     @Bean
     public OpenAPI openAPI(@Value("${otus.description}") String appDescription, @Value("${otus.api-version}") String appVersion) {
-        return new OpenAPI().info(new Info()
+        OpenAPI openapi = new OpenAPI();
+        if (isNotBlank(baseUrl)) {
+            Server server = new Server();
+            server.setUrl(baseUrl);
+            openapi.addServersItem(server);
+        }
+        return openapi.info(new Info()
                 .title("OTUS.ru. API service").description(appDescription).version(appVersion)
                 .license(new License().name("Apache 2.0").url("http://arch.homework/otusapp")));
     }

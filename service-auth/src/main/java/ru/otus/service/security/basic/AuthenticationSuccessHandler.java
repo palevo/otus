@@ -1,7 +1,6 @@
 package ru.otus.service.security.basic;
 
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.server.WebFilterExchange;
@@ -33,8 +32,7 @@ public class AuthenticationSuccessHandler implements ServerAuthenticationSuccess
     public Mono<Void> onAuthenticationSuccess(WebFilterExchange wfe, Authentication authentication) {
         ServerWebExchange exchange = wfe.getExchange();
         ServerHttpResponse response = exchange.getResponse();
-        response.setStatusCode(HttpStatus.OK);
         response.getHeaders().add(HttpHeaders.AUTHORIZATION, "Bearer " + jwt.generate(authentication));
-        return response.setComplete();
+        return Mono.empty();
     }
 }

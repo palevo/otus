@@ -6,17 +6,15 @@ otus:
 # Swagger
 springdoc:
   swagger-ui:
-    path: ${server.servlet.context-path}/openapi
+    path: /openapi
   api-docs:
-    path: ${server.servlet.context-path}/openapi/api-docs
+    path: /openapi/api-docs
   webjars:
-    prefix: ${server.servlet.context-path}/openapi/webjars
+    prefix: /openapi/webjars
 
 # Server
 server:
   port: 8000
-  servlet:
-    context-path: /
 
 # Spring
 spring:

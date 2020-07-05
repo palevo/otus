@@ -4,9 +4,11 @@ apps:
   auth:
     name: auth
     port: 8000
-    contextPath: /auth-service
     enabled: true
     replicaCount: 2
+    paths:
+      # base url for openapi
+      openapi: /otusapp/auth/openapi
     image:
       repository: palevo/otus-service-auth
     metrics:
@@ -16,17 +18,24 @@ apps:
       port: 8080
     ingress:
       host: arch.homework
-      path: /otusapp/auth-service($|/)(.*)
+      basePath: /otusapp
+      paths:
+        auth: /otusapp/(auth)($|/)(.*)
+        openapi: /(otusapp/auth/openapi)($|/)(.*)
+        actuator: /otusapp/auth/(actuator)($|/)(.*)
       annotations: {
-        nginx.ingress.kubernetes.io/rewrite-target: /$2
+        nginx.ingress.kubernetes.io/rewrite-target: /$1/$3
       }
 
   # Application: otus-service-api
   api:
     name: api
     port: 8000
-    enabled: false
+    enabled: true
     replicaCount: 2
+    paths:
+      # base url for openapi
+      openapi: /otusapp/openapi
     image:
       repository: palevo/otus-service-api
     metrics:
@@ -36,12 +45,16 @@ apps:
       port: 8081
     ingress:
       host: arch.homework
-      path: /otusapp($|/)(.*)
+      basePath: /otusapp
+      paths:
+        api: /otusapp/(users)($|/)(.*)
+        openapi: /(otusapp/openapi)($|/)(.*)
+        actuator: /otusapp/(actuator)($|/)(.*)
       annotations: {
         nginx.ingress.kubernetes.io/auth-url: "/auth",
         nginx.ingress.kubernetes.io/auth-signin: "/auth/login",
         nginx.ingress.kubernetes.io/auth-response-headers: "Authorization",
-        nginx.ingress.kubernetes.io/rewrite-target: /$2
+        nginx.ingress.kubernetes.io/rewrite-target: /$1/$3
       }
 
 

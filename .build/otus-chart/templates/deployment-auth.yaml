@@ -25,14 +25,23 @@ spec:
               containerPort: {{ .Values.apps.auth.port }}
               protocol: TCP
           env:
+            - name: otus.url
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-config
+                  key: BASE_AUTH_URL
             - name: otus.version
               value: {{ .Chart.AppVersion | quote }}
-            - name: spring.application.name
-              value: {{ include "apps.auth.name" . | quote }}
             - name: server.port
               value: {{ .Values.apps.auth.port | quote }}
-            - name: server.servlet.context-path
-              value: {{ .Values.apps.auth.contextPath | quote }}
+            - name: springdoc.swagger-ui.path
+              value: {{ printf "%s" .Values.apps.auth.paths.openapi | quote }}
+            - name: springdoc.api-docs.path
+              value: {{ printf "%s/api-docs" .Values.apps.auth.paths.openapi | quote }}
+            - name: springdoc.webjars.path
+              value: {{ printf "%s/webjars" .Values.apps.auth.paths.openapi | quote }}
+            - name: spring.application.name
+              value: {{ include "apps.auth.name" . | quote }}
             - name: spring.datasource.url
               valueFrom:
                 secretKeyRef:
@@ -50,7 +59,7 @@ spec:
                   key: POSTGRES_PASS
           livenessProbe:
             httpGet:
-              path: /
+              path: /actuator/health
               port: auth-http
             initialDelaySeconds: 10
             periodSeconds: 5

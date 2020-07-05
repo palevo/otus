@@ -2,6 +2,7 @@ package ru.otus.service.security;
 
 import java.nio.charset.StandardCharsets;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
@@ -34,6 +35,8 @@ public class SecurityConfiguration {
     private static final byte[] UNAUTHORIZED_VALUE = "UNAUTHORIZED".getBytes(StandardCharsets.UTF_8);
     private static final byte[] FORBIDDEN_VALUE = "FORBIDDEN".getBytes(StandardCharsets.UTF_8);
 
+    @Value("${springdoc.swagger-ui.path}")
+    private String openapiBasePath;
     private final JWTService jwt;
 
     /**
@@ -71,7 +74,7 @@ public class SecurityConfiguration {
                 .and()
                 .authorizeExchange()
                 .pathMatchers(OPTIONS).permitAll()
-                .pathMatchers("/", "/openapi/**", "/actuator/**").permitAll()
+                .pathMatchers("/", openapiBasePath + "/**", "/actuator/**").permitAll()
                 .anyExchange().authenticated()
 
                 .and()

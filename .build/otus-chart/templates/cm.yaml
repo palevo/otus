@@ -4,6 +4,9 @@ metadata:
   name: {{ .Release.Name }}-config
   labels:
   {{- include "app.labels" . | nindent 4 }}
+data:
+  BASE_API_URL: {{ include "apps.api.url" . | quote }}
+  BASE_AUTH_URL: {{ include "apps.auth.url" . | quote }}
 ---
 apiVersion: v1
 kind: Secret

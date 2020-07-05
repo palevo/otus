@@ -12,7 +12,15 @@ spec:
     - host: {{ .Values.apps.api.ingress.host }}
       http:
         paths:
-          - path: {{ .Values.apps.api.ingress.path }}
+          - path: {{ .Values.apps.api.ingress.paths.api }}
+            backend:
+              serviceName: {{ include "apps.api.name" . }}-service
+              servicePort: {{ .Values.apps.api.service.port }}
+          - path: {{ .Values.apps.api.ingress.paths.openapi }}
+            backend:
+              serviceName: {{ include "apps.api.name" . }}-service
+              servicePort: {{ .Values.apps.api.service.port }}
+          - path: {{ .Values.apps.api.ingress.paths.actuator }}
             backend:
               serviceName: {{ include "apps.api.name" . }}-service
               servicePort: {{ .Values.apps.api.service.port }}

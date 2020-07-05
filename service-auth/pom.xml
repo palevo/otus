@@ -6,12 +6,12 @@
     <parent>
         <groupId>ru.otus</groupId>
         <artifactId>app</artifactId>
-        <version>1.0.3</version>
+        <version>1.0.13</version>
     </parent>
 
     <groupId>ru.otus.app</groupId>
     <artifactId>service-auth</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.13</version>
 
     <dependencies>
         <dependency>
